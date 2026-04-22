@@ -1,22 +1,13 @@
 # PrimeCast 
-<small>AI-Powered Korean Stock Market Trading System</small>
+우리나라 주식시장에서 AI를 이용해 특정 주식의 미래 가격을 예측하고, 실시간으로 매도·매수 시기를 자동으로 판단하여 매매를 자동화하는 시스템을 개발하는 프로젝트.
 
+<br/>
 
-<h1>
-    PrimeCast
-    <br>
-    <small style="font-weight: normal; color: #888888; font-size: 15px">
-        AI-Powered Korean Stock Market Trading System
-    </small>
-    <br/>
-</h1>
-
-## 프로젝트 개요
-
+## 프로젝트 개요 (Overview)
 한국 주식시장을 대상으로 한 데이터 기반 AI 트레이딩 시스템 구축 프로젝트.  
 삼성전자(005930)를 시작점으로, 거시경제 데이터와 기술적 지표를 결합한 ML 파이프라인을 구현한다.
 
----
+<br/>
 
 ## 데이터 파이프라인 (`stock_data_pipeline.py`)
 
