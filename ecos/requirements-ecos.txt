@@ -1,0 +1,10 @@
+# 세계은행 공식 권장 패키지
+wbgapi
+
+# 유틸리티
+jupyter
+jupyterlab
+# 데이터 분석
+pandas
+matplotlib
+seaborn
