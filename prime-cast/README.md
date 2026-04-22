@@ -1,4 +1,15 @@
-# AI-Powered Korean Stock Market Trading System
+# PrimeCast 
+<small>AI-Powered Korean Stock Market Trading System</small>
+
+
+<h1>
+    PrimeCast
+    <br>
+    <small style="font-weight: normal; color: #888888; font-size: 15px">
+        AI-Powered Korean Stock Market Trading System
+    </small>
+    <br/>
+</h1>
 
 ## 프로젝트 개요
 
