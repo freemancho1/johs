@@ -50,6 +50,7 @@
 |:---|:---|:---|
 |1-3-1.<br>보조 데이터 |· 거래일·휴장일 캘린더<br>· 종목 마스터 (코드·명·업종)<br>· 시가총액·상장 주식수<br>· 지수 편입 종목 리스트<br>|⇒ pykrx, exchange_calendars<br>⇒ pykrx, FinanceDataReader, KRX<br>⇒ pykrx<br>⇒ pykrx (KOSPI200 등)<br>|
 
+### STEP-2. 데이터 전처리
 
 
 
