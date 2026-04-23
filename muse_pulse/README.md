@@ -15,7 +15,42 @@
 |가격 데이터 | · `일봉 OHLCV`: pykrx, FinanceDataReader, yfinance <br> · `분봉 OHLCV (1/5/15/30/60min)`: pykrx (최근분), 네이버 금융 크롤링 <br> · `수정 주가`: FinanceDataReader, yfinance <br> · `상장·상폐 이력`: pykrx, krx 정보데이터시스템 <br> · `거래정지 이력`: KRX 정보데이터시스템 크롤링 <br> · `공매도 잔고·대차잔고`: KRX 정보데이터시스템 |
 |수급 데이터 ||
 
+
+| 단계 | 도구 | 상세 내용 |
+|:---:|:---|:---|
+| <br> 1. 데이터 수집 <br> | * yfinance <br> * pykrx <br> * FinanceDataReader | * 미국/한국 시장 데이터 <br> * 한국 거래소 데이터 <br> * 가격 및 재무 지표 수집 |
+| 2. 데이터 정제 | * 결측치 처리 | * 이동평균법 활용 |
 ---
+
+<table>
+  <thead>
+    <tr>
+      <th>단계</th>
+      <th>도구</th>
+      <th>상세 내용</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="3" align="center">1. 데이터 수집</td>
+      <td>yfinance</td>
+      <td>미국 및 글로벌 시장 OHLCV</td>
+    </tr>
+    <tr>
+      <td>pykrx</td>
+      <td>KOSPI/KOSDAQ 종목 정보</td>
+    </tr>
+    <tr>
+      <td>FinanceDataReader</td>
+      <td>한국 시장 지수 및 가격 데이터</td>
+    </tr>
+    <tr>
+      <td align="center">2. 데이터 정제</td>
+      <td>Scikit-learn</td>
+      <td>이상치 제거 및 스케일링</td>
+    </tr>
+  </tbody>
+</table>
 
 ## 핵심 설계 결정
 
