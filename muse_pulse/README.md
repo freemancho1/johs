@@ -10,6 +10,26 @@
 아래 표시된 데이터는 인터넷 상에서 무료로 접근 가능한 데이터를 기반으로 함
 
 #### 가격·거래 데이터
+
+<table width="100%">
+  <thead>
+    <tr>
+      <th width="30%">단계</th>
+      <th>내용</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td align="center">1. 데이터 수집</td>
+      <td>yfinance / pykrx / FinanceDataReader로 OHLCV 수집</td>
+    </tr>
+    <tr>
+      <td align="center">2. 데이터 정제</td>
+      <td>결측치 처리, 이상치 제거</td>
+    </tr>
+  </tbody>
+</table>
+
 | 단계 | 내용 |
 |------|------|
 | 1. 데이터 수집 | yfinance / pykrx / FinanceDataReader로 OHLCV 수집 |
