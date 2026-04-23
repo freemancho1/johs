@@ -1,6 +1,7 @@
-# Muse Pulse
+# MPP: Muse Pulse Project
 
-우리나라 주식시장에서 AI를 이용해 특정 주식의 미래 가격을 예측하고, 실시간으로 매도·매수 시기를 자동으로 판단하여 매매를 자동화하는 시스템을 개발하는 프로젝트로, <br/> 다양한 시장 참여자의 `뮤즈(Muse, 아이디어·심리·의도)`에서 살아있는 `맥박(Pulse)`을 짚어낸다는 의미.
+우리나라 주식시장에서 AI를 이용해 특정 주식의 미래 가격을 예측하고, 실시간으로 매도·매수 시기를 자동으로 판단하여 매매를 자동화하는 시스템을 개발하는 프로젝트로
+> MP는 시장 참여자의 `뮤즈(Muse, 아이디어·심리·의도)`에서 살아있는 `펄스(Pulse, 맥박·맥락)`을 짚어낸다는 뜻으로, `참여자의 심리를 바로 찾아 거래를 주도한다`는 의미임
 
 <br/>
 
@@ -25,7 +26,6 @@
 |1-1-7.<br>시장·섹터 데이터|· KOSPI·KOSPI200·KOSDAQ<br>· 업종·섹터 지수<br>· 섹터 ETF 시계열<br>· 해외 지수 (S&P500, Nasdaq..)<br>· VIX<br>· V-KOSPI<br>|⇒ pykrx, FinanceDataReader<br>⇒ pykrx<br>⇒ pykrx, FinanceDataReader<br>⇒ yfinance<br>⇒ yfinance<br>⇒ KRX 정보데이터시스템<br>| 
 |1-1-8.<br>파생상품 데이터|· KOSPI200 선물 일봉<br>· Put/Call Ratio<br>|⇒ pykrx, FinanceDataReader<br>⇒ KRX 정보데이터시스템<br>| 
 |1-1-9.<br>대안 데이터|· Google Trends<br>· 네이버 데이터랩 검색 드렌드<br>|⇒ pytrends 라이브러리<br>⇒ 네이버 개발자 API<br>|
-|||| 
 
 #### 1-2. 실시간 데이터
 실시간 영역의 데이터는 모델 학습용으로 수집한 과거 데이터보다 제약조건이 많아 종류나 양 측면에서 현저히 적음
@@ -40,7 +40,6 @@
 |1-2-6.<br> 실시간 계좌·주문 상태 |· 체결 통보<br>· 미체결 주문·잔고·증거금<br>· 실시간 PnL<br>|⇒ KIS Websocket<br>⇒ KIS REST API<br>⇒ 직접 계산<br>| 
 |1-2-7.<br> 실시간 파생 피처|· KIS 호가, VWAP 등<br>|⇒ 원천 데이터를 이용 직접 계산<br>|
 |1-2-8.<br> 대안 실시간 데이터|· Google Trends (일단위)<br>· 네이버 종목 토론실<br>· X(Twitter) API<br>|⇒ pytrends (진짜 실시간은 아님)<br>⇒ 크롤링 (5~15분 단위)<br>⇒ 사실상 유료<br>| 
-||||
 
 * KIS Open API가 국내 무료 실시간 시세의 사실상 표준으로, 계좌만 있으면 모의투자·실전 모두 무료이지만 **초당 호출 제한이 있어 구독 종목 수가 제한됨(보통 40종목 수준)**
 * 해외 실시간 데이터는 장이 열리는 시간이 미국과 한국이 다르기 때문에 15분 지연은 문제가 되지 않지만, **미국 선물이나 야간 거래에 대한 자료는 15분 지연값이라도 필요**하니 가져올 필요가 있음
@@ -50,8 +49,6 @@
 | 구분 | 데이터 | 출처 |
 |:---|:---|:---|
 |1-3-1.<br>보조 데이터 |· 거래일·휴장일 캘린더<br>· 종목 마스터 (코드·명·업종)<br>· 시가총액·상장 주식수<br>· 지수 편입 종목 리스트<br>|⇒ pykrx, exchange_calendars<br>⇒ pykrx, FinanceDataReader, KRX<br>⇒ pykrx<br>⇒ pykrx (KOSPI200 등)<br>|
-||||
-
 
 
 
@@ -60,4 +57,4 @@
 <br>
 
 ---
-*Last updated⇒ 2026-04-23 18:00*
+*Last updated⇒ 2026-04-23 18:00 freeman.cho@gmail.com*
