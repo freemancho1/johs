@@ -9,36 +9,11 @@
 ### STEP-1. 데이터 수집
 아래 표시된 데이터는 인터넷 상에서 무료로 접근 가능한 데이터를 기반으로 함
 
-#### 가격·거래 데이터
-
-<table width="100%">
-  <thead>
-    <tr>
-      <th width="30%">단계</th>
-      <th>내용</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td align="center">1. 데이터 수집</td>
-      <td>yfinance / pykrx / FinanceDataReader로 OHLCV 수집</td>
-    </tr>
-    <tr>
-      <td align="center">2. 데이터 정제</td>
-      <td>결측치 처리, 이상치 제거</td>
-    </tr>
-  </tbody>
-</table>
-
-| 단계 | 내용 |
-|------|------|
-| 1. 데이터 수집 | yfinance / pykrx / FinanceDataReader로 OHLCV 수집 |
-| 2. 데이터 정제 | 결측치 처리, 이상치 제거 |
-| 3. 피처 엔지니어링 | 7개 그룹, 48개 기술적 지표 생성 |
-| 4. 정규화 | Z-score 정규화 (훈련 데이터 기준으로만 fit) |
-| 5. 레이블링 | Triple Barrier 레이블링 |
-| 6. 시퀀스 생성 | 60일 룩백 윈도우 기반 슬라이딩 윈도우 |
-| 7. 데이터 분할 | 시간순 70 / 15 / 15 (Train / Val / Test) |
+#### 모델 학습용 데이터 (과거 데이터)
+| 구분 | 데이터 |
+|:---|:---|
+|가격 데이터 | · `일봉 OHLCV`: pykrx, FinanceDataReader, yfinance <br> · `분봉 OHLCV (1/5/15/30/60min)`: pykrx (최근분), 네이버 금융 크롤링 <br> · `수정 주가`: FinanceDataReader, yfinance <br> · `상장·상폐 이력`: pykrx, krx 정보데이터시스템 <br> · `거래정지 이력`: KRX 정보데이터시스템 크롤링 <br> · `공매도 잔고·대차잔고`: KRX 정보데이터시스템 |
+|수급 데이터 ||
 
 ---
 
