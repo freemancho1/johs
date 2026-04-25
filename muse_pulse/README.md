@@ -64,7 +64,7 @@
 * **V-KOSPI**: KRX 정보데이터시스템
  
 ##### 1-1-8. 파생상품 데이터
-* **KOSPI200 선물 일봉**: pykrx, FinanceDataReader
+* **KOSPI200 선물 일봉**: pykrx, FinanceDataReader  
 * **Put/Call Ratio**: KRX 정보데이터시스템
  
 ##### 1-1-9. 대안 데이터
