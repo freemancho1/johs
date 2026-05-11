@@ -21,7 +21,7 @@ class PhaseConfig:
     """
     tickers: list[str] = field(default_factory=lambda: ["005930"])  # 삼성전자
     # 롤백 윈도우: 신호 생성 전 반드시 확보해야 할 과거 봉 수
-    # RSI(14), MACD(26), BB(20), ATR(14) 중 가장 긴 게 26봉이므로 120이면 충분하나
+    # RSI(14), MACD(26), BB(20), ATR(14) 중 가장 긴 게 26봉이면 충분하나
     # 롤링 Z-score 정규화를 위해 더 긴 120 사용
     lookback_minutes: int = 120
     market_open: str = "09:00"
@@ -51,7 +51,7 @@ class CostConfig:
     실제 수익에 비용을 과소평가하면 백테스트가 낙관적이 된다.
     슬리피지 0.1% 는 KRX 시장가 주문 기준 현실적 상한선.
 
-    왕복 비용(roundtrip_cost) ≈ 0.25% → 이것이 진입 신호의 최소 기대수익 기준.
+    왕복 비용(roundtrip_cost) ≈ 0.41% → 이것이 진입 신호의 최소 기대수익 기준.
     combined_score >= 0.55 임계값도 이 비용을 커버할 수 있는 신뢰도에서 도출됨.
     """
     commission_rate: float = 0.00015   # 0.015% 편도 (증권사 할인 기준)
@@ -65,7 +65,7 @@ class CostConfig:
         = 0.015%*2 + 0.18% + 0.1%*2 ≈ 0.413%
         신호 임계값 설정의 하한선으로 사용.
         """
-        return self.commission_rate * 2 + self.tax_rate + self.slippage_rate
+        return self.commission_rate * 2 + self.tax_rate + self.slippage_rate * 2
 
 
 @dataclass
@@ -105,11 +105,14 @@ class SignalConfig:
 class RiskConfig:
     """리스크 관리 파라미터.
 
-    max_position_pct = 0.1 → 계좌 잔액의 10% 이상 한 종목에 집중하지 않는다.
-    Phase 1 단일 종목이므로 이 값이 사실상 전체 포지션 크기를 결정한다.
+    max_position_pct : 거래당 투입 자본 상한 (초기 자본 기준).
+                       Phase 1 단일 종목에서는 베팅 사이즈 규칙으로 작동.
+                       다종목 확장 시 분산 규칙(종목당 배분 상한)으로 전환되며,
+                       그 시점에 PositionSizer 와 함께 설계를 재검토한다.
+    initial_capital  : 초기 자본. PositionSizer 가 절대 금액 상한을 계산할 때 기준.
     """
-    max_position_pct: float = 0.1      # 계좌 대비 최대 포지션 비율 10%
-    initial_capital: float = 10_000_000.0   # 초기 자본 1천만 원
+    max_position_pct: float = 0.1             # 거래당 초기 자본의 10%
+    initial_capital: float = 10_000_000.0     # 초기 자본 1천만 원
 
 
 @dataclass
