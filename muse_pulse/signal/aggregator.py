@@ -16,7 +16,9 @@
 """
 from __future__ import annotations
 
-from ..core.types import NumericalSignal, PatternSignal, TradeSignal
+from typing import cast
+
+from ..core.types import BSDirection, NumericalSignal, PatternSignal, TradeSignal
 
 # 방향 → 수치 매핑 (현재 코드에서는 직접 사용하지 않으나 향후 방향 비교 일반화 시 활용)
 _DIR_SCORE = {"BUY": 1.0, "SELL": -1.0, "HOLD": 0.0}
@@ -77,7 +79,7 @@ class SignalAggregator:
         return TradeSignal(
             ticker=num.ticker,
             timestamp=num.timestamp,
-            direction=direction,
+            direction=cast(BSDirection, direction),
             combined_score=round(combined, 4),
             num_track_conf=num.confidence,
             pat_track_conf=pat.confidence,

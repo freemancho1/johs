@@ -23,10 +23,12 @@ from datetime import datetime
 
 import numpy as np
 
-from ...core.types import Bar, PatternInput, PatternSignal
+from ...core.types import Bar, Direction, PatternInput, PatternSignal
 
 
 class RuleBasedPatternEngine:
+    _NO_SIGNAL: tuple[Direction, float, str] = ("HOLD", 0.0, "none")
+
     def run(self, inp: PatternInput, bars: list[Bar]) -> PatternSignal:
         """패턴 감지 후 PatternSignal 반환. 지연시간 측정 포함."""
         t0 = time.perf_counter()
@@ -45,14 +47,14 @@ class RuleBasedPatternEngine:
 
     def _detect(
         self, inp: PatternInput, bars: list[Bar]
-    ) -> tuple[str, float, str]:
+    ) -> tuple[Direction, float, str]:
         """우선순위 순서로 패턴을 검사하고 첫 번째 매칭을 반환.
 
         bars 는 원본 Bar 리스트 (절대 가격 사용: 비율 계산에 필요).
         inp.ohlcv_series 는 정규화된 값 (현재 이 메서드에서는 미사용, 향후 CNN 용).
         """
         if len(bars) < 5:
-            return "HOLD", 0.0, "none"
+            return self._NO_SIGNAL
 
         checks = [
             self._hammer,
@@ -68,11 +70,11 @@ class RuleBasedPatternEngine:
             if direction != "HOLD":
                 return direction, conf, name
 
-        return "HOLD", 0.0, "none"
+        return self._NO_SIGNAL
 
     # ── 단봉 패턴 ──────────────────────────────────────────────────────────────
 
-    def _hammer(self, bars: list[Bar]) -> tuple[str, float, str]:
+    def _hammer(self, bars: list[Bar]) -> tuple[Direction, float, str]:
         """망치형(Hammer) — 하락 추세 후 반전 신호.
 
         조건: 아래꼬리 >= 몸통*2  AND  윗꼬리 <= 몸통*0.3
@@ -84,12 +86,12 @@ class RuleBasedPatternEngine:
         lower_shadow = min(b.open, b.close) - b.low
         upper_shadow = b.high - max(b.open, b.close)
         if body < 1e-8:  # 도지봉(몸통 거의 없음) 제외
-            return "HOLD", 0.0, ""
+            return self._NO_SIGNAL
         if lower_shadow >= body * 2 and upper_shadow <= body * 0.3:
             return "BUY", 0.6, "hammer"
-        return "HOLD", 0.0, ""
+        return self._NO_SIGNAL
 
-    def _shooting_star(self, bars: list[Bar]) -> tuple[str, float, str]:
+    def _shooting_star(self, bars: list[Bar]) -> tuple[Direction, float, str]:
         """유성형(Shooting Star) — 상승 추세 후 반전 신호.
 
         조건: 윗꼬리 >= 몸통*2  AND  아래꼬리 <= 몸통*0.3
@@ -100,14 +102,14 @@ class RuleBasedPatternEngine:
         upper_shadow = b.high - max(b.open, b.close)
         lower_shadow = min(b.open, b.close) - b.low
         if body < 1e-8:
-            return "HOLD", 0.0, ""
+            return self._NO_SIGNAL
         if upper_shadow >= body * 2 and lower_shadow <= body * 0.3:
             return "SELL", 0.6, "shooting_star"
-        return "HOLD", 0.0, ""
+        return self._NO_SIGNAL
 
     # ── 이중봉 패턴 ──────────────────────────────────────────────────────────
 
-    def _bullish_engulfing(self, bars: list[Bar]) -> tuple[str, float, str]:
+    def _bullish_engulfing(self, bars: list[Bar]) -> tuple[Direction, float, str]:
         """강세 장악형(Bullish Engulfing) — 강력한 반전 신호.
 
         조건:
@@ -118,7 +120,7 @@ class RuleBasedPatternEngine:
         신뢰도 0.7: 이중봉 확인으로 단봉보다 신뢰도 높음.
         """
         if len(bars) < 2:
-            return "HOLD", 0.0, ""
+            return self._NO_SIGNAL
         prev, curr = bars[-2], bars[-1]
         if (
             prev.close < prev.open               # 전봉: 음봉
@@ -127,15 +129,15 @@ class RuleBasedPatternEngine:
             and curr.close > prev.open            # 전봉 몸통 완전 포괄
         ):
             return "BUY", 0.7, "bullish_engulfing"
-        return "HOLD", 0.0, ""
+        return self._NO_SIGNAL
 
-    def _bearish_engulfing(self, bars: list[Bar]) -> tuple[str, float, str]:
+    def _bearish_engulfing(self, bars: list[Bar]) -> tuple[Direction, float, str]:
         """약세 장악형(Bearish Engulfing) — 상승 후 하락 반전 신호.
 
         조건: 전봉 양봉, 현봉 음봉이 전봉 몸통을 완전히 감쌈.
         """
         if len(bars) < 2:
-            return "HOLD", 0.0, ""
+            return self._NO_SIGNAL
         prev, curr = bars[-2], bars[-1]
         if (
             prev.close > prev.open               # 전봉: 양봉
@@ -144,11 +146,11 @@ class RuleBasedPatternEngine:
             and curr.close < prev.open            # 전봉 몸통 완전 포괄
         ):
             return "SELL", 0.7, "bearish_engulfing"
-        return "HOLD", 0.0, ""
+        return self._NO_SIGNAL
 
     # ── 삼봉 패턴 ──────────────────────────────────────────────────────────────
 
-    def _morning_star(self, bars: list[Bar]) -> tuple[str, float, str]:
+    def _morning_star(self, bars: list[Bar]) -> tuple[Direction, float, str]:
         """샛별형(Morning Star) — 하락 추세에서 반전하는 삼봉 패턴.
 
         조건:
@@ -158,7 +160,7 @@ class RuleBasedPatternEngine:
         신뢰도 0.75: 3봉 확인으로 높은 신뢰도.
         """
         if len(bars) < 3:
-            return "HOLD", 0.0, ""
+            return self._NO_SIGNAL
         b1, b2, b3 = bars[-3], bars[-2], bars[-1]
         body2 = abs(b2.close - b2.open)
         body1 = abs(b1.close - b1.open)
@@ -169,16 +171,16 @@ class RuleBasedPatternEngine:
             and b3.close > (b1.open + b1.close) / 2  # b3 종가가 b1 몸통 중간 이상
         ):
             return "BUY", 0.75, "morning_star"
-        return "HOLD", 0.0, ""
+        return self._NO_SIGNAL
 
-    def _evening_star(self, bars: list[Bar]) -> tuple[str, float, str]:
+    def _evening_star(self, bars: list[Bar]) -> tuple[Direction, float, str]:
         """저녁별형(Evening Star) — 상승 추세에서 반전하는 삼봉 패턴.
 
         morning_star 의 반전 버전.
         b1 양봉 → b2 도지 → b3 음봉이 b1 몸통 중간 이하 하락.
         """
         if len(bars) < 3:
-            return "HOLD", 0.0, ""
+            return self._NO_SIGNAL
         b1, b2, b3 = bars[-3], bars[-2], bars[-1]
         body2 = abs(b2.close - b2.open)
         body1 = abs(b1.close - b1.open)
@@ -189,11 +191,11 @@ class RuleBasedPatternEngine:
             and b3.close < (b1.open + b1.close) / 2  # b3 종가가 b1 몸통 중간 이하
         ):
             return "SELL", 0.75, "evening_star"
-        return "HOLD", 0.0, ""
+        return self._NO_SIGNAL
 
     # ── 차트 패턴 ──────────────────────────────────────────────────────────────
 
-    def _box_breakout(self, bars: list[Bar]) -> tuple[str, float, str]:
+    def _box_breakout(self, bars: list[Bar]) -> tuple[Direction, float, str]:
         """박스권 돌파(Box Breakout) — 횡보 구간 이탈 신호.
 
         [알고리즘]
@@ -206,7 +208,7 @@ class RuleBasedPatternEngine:
         신뢰도 0.65: 단봉보다 높지만 이중봉보다 낮은 중간 수준.
         """
         if len(bars) < 21:
-            return "HOLD", 0.0, ""
+            return self._NO_SIGNAL
 
         # 현재봉 제외 직전 20봉
         box = bars[-21:-1]
@@ -220,4 +222,4 @@ class RuleBasedPatternEngine:
             return "BUY", 0.65, "box_breakout_up"
         if curr.close < support * 0.999:
             return "SELL", 0.65, "box_breakout_down"
-        return "HOLD", 0.0, ""
+        return self._NO_SIGNAL
