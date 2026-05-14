@@ -139,7 +139,7 @@ class FeatureExtractor:
         return 100 - 100 / (1 + rs)
 
     @staticmethod
-    def _macd(close: pd.Series):
+    def _macd(close: pd.Series) -> tuple[pd.Series, pd.Series, pd.Series]:
         """표준 MACD: EMA(12) - EMA(26), 시그널 EMA(9)."""
         ema12 = close.ewm(span=12).mean()
         ema26 = close.ewm(span=26).mean()
@@ -148,7 +148,7 @@ class FeatureExtractor:
         return macd, signal, macd - signal
 
     @staticmethod
-    def _bollinger(close: pd.Series, window: int = 20):
+    def _bollinger(close: pd.Series, window: int = 20) -> tuple[pd.Series, pd.Series, pd.Series]:
         """볼린저밴드: 20MA ± 2σ."""
         mid = close.rolling(window).mean()
         std = close.rolling(window).std()
