@@ -21,7 +21,6 @@ from __future__ import annotations
 from collections import deque
 from datetime import datetime
 
-from tqdm import tqdm  # 진행 바 — 긴 백테스트에서 진행 상황 확인용
 
 from ..core.types import Bar, Order, TradeSignal
 from ..config.settings import settings
@@ -97,7 +96,7 @@ class HistoricalSimulator:
         open_order: Order | None = None  # 현재 보유 중인 포지션 (None=미보유)
 
         # ── 메인 루프: 봉 하나씩 재생 ────────────────────────────────────────
-        for bar in tqdm(bars, desc="백테스트 진행"):
+        for bar in bars:
             buffer.append(bar)
 
             # ── ① 보유 포지션 청산 체크 ──────────────────────────────────────
@@ -110,6 +109,9 @@ class HistoricalSimulator:
                     result = self._trader.submit_order(open_order, bar.close)
                     cost = self._cost_model.sell_cost(result.filled_price, result.filled_qty)
                     self._ord_logger.log(open_order, result)
+
+                    # order.price 는 진입 시 bar.close 로 항상 채워진다 (Optional 타입 좁힘)
+                    assert open_order.price is not None
 
                     # 손익 계산: 진입가 vs 청산가 차이 * 수량
                     if open_order.direction == "BUY":

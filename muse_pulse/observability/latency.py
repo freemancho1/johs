@@ -20,6 +20,8 @@ import time
 from collections import defaultdict
 from contextlib import contextmanager
 
+import numpy as np
+
 
 class LatencyMonitor:
     def __init__(self) -> None:
@@ -55,7 +57,6 @@ class LatencyMonitor:
 
         p95 가 LatencyGuard.max_total_ms(5000ms) 에 근접하면 실거래에서 신호가 폐기될 위험.
         """
-        import numpy as np
         result = {}
         for comp, values in self._records.items():
             arr = np.array(values)
